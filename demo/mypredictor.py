@@ -1,4 +1,3 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import cv2
 import torch
 from torchvision import transforms as T
@@ -12,9 +11,59 @@ from maskrcnn_benchmark.utils import cv2_util
 
 
 class MyDemo(object):
-    # COCO categories for pretty print
+
     CATEGORIES = [
         "__background",
+        "Anorak",
+        "Blazer",
+        "Blouse",
+        "Bomber",
+        "Button-Down",
+        "Cardigan",
+        "Flannel",
+        "Halter",
+        "Henley",
+        "Hoodie",
+        "Jacket",
+        "Jersey",
+        "Parka",
+        "Peacoat",
+        "Poncho",
+        "Sweater",
+        "Tank",
+        "Tee",
+        "Top",
+        "Turtleneck",
+        "Capris",
+        "Chinos",
+        "Culottes",
+        "Cutoffs",
+        "Gauchos",
+        "Jeans",
+        "Jeggings",
+        "Jodhpurs",
+        "Joggers",
+        "Leggings",
+        "Sarong",
+        "Shorts",
+        "Skirt",
+        "Sweatpants",
+        "Sweatshorts",
+        "Trunks",
+        "Caftan",
+        "Cape",
+        "Coat",
+        "Coverup",
+        "Dress",
+        "Jumpsuit",
+        "Kaftan",
+        "Kimono",
+        "Nightdress",
+        "Onesie",
+        "Robe",
+        "Romper",
+        "Shirtdress",
+        "Sundress"
     ]
 
     def __init__(
@@ -79,7 +128,7 @@ class MyDemo(object):
         )
         return transform
 
-    def run_on_opencv_image(self, image):
+    def run_on_opencv_image(self, image, confThreshold=None):
         """
         Arguments:
             image (np.ndarray): an image as returned by OpenCV
@@ -90,7 +139,7 @@ class MyDemo(object):
                 the BoxList via `prediction.fields()`
         """
         predictions = self.compute_prediction(image)
-        top_predictions = self.select_top_predictions(predictions)
+        top_predictions = self.select_top_predictions(predictions, confThreshold)
 
         result = image.copy()
         if self.show_mask_heatmaps:
@@ -141,7 +190,7 @@ class MyDemo(object):
             prediction.add_field("mask", masks)
         return prediction
 
-    def select_top_predictions(self, predictions):
+    def select_top_predictions(self, predictions, confThreshold=None):
         """
         Select only predictions which have a `score` > self.confidence_threshold,
         and returns the predictions in descending order of score
@@ -155,8 +204,12 @@ class MyDemo(object):
                 of the detection properties can be found in the fields of
                 the BoxList via `prediction.fields()`
         """
+        threshold = self.confidence_threshold
+        if confThreshold is not None:
+            conf = confThreshold
+        
         scores = predictions.get_field("scores")
-        keep = torch.nonzero(scores > self.confidence_threshold).squeeze(1)
+        keep = torch.nonzero(scores > conf).squeeze(1)
         predictions = predictions[keep]
         scores = predictions.get_field("scores")
         _, idx = scores.sort(0, descending=True)
@@ -287,7 +340,7 @@ class MyDemo(object):
                 image, s, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2
             )
             x1,y1,x2,y2=box[:4]
-            print("{}: {:.2f} {:.0f} x {:.0f}".format(label, score, x2-x1, y2-y1))
+            print("{:<20} {:>6.2f} {:>6.0f} * {:.0f}".format(label, score, x2-x1, y2-y1))
 
         return image
 
