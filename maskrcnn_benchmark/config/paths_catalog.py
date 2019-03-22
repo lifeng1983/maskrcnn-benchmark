@@ -103,6 +103,15 @@ class DatasetCatalog(object):
         "cityscapes_fine_instanceonly_seg_test_cocostyle": {
             "img_dir": "cityscapes/images",
             "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_test.json"
+        },
+        "mydataset_train": {
+        	"ann_file": "/data/fenli/training/fashion/label_train.json"
+        },
+        "mydataset_val": {
+			"ann_file": "/data/fenli/training/fashion/label_val.json"
+        },
+        "mydataset_test": {
+			"ann_file": "/data/fenli/training/fashion/label_test.json"
         }
     }
 
@@ -130,6 +139,15 @@ class DatasetCatalog(object):
                 factory="PascalVOCDataset",
                 args=args,
             )
+        elif "mydataset" in name:
+        	args = dict(
+        		ann_file=os.path.join(data_dir, attrs["ann_file"]),
+        	)
+        	return dict(
+        		factory="MyDataset",
+        		args=args,
+        	)
+
         raise RuntimeError("Dataset not available: {}".format(name))
 
 
