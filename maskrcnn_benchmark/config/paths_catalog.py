@@ -105,13 +105,16 @@ class DatasetCatalog(object):
             "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_test.json"
         },
         "mydataset_train": {
-        	"ann_file": "/data/fenli/training/fashion/label_train.json"
+            "data_dir": "/home/fenli/my_data/training/fashion_catgory_attr_prediction",
+            "ann_file": "label_train.json"
         },
         "mydataset_val": {
-			"ann_file": "/data/fenli/training/fashion/label_val.json"
+            "data_dir": "/home/fenli/my_data/training/fashion_catgory_attr_prediction",
+            "ann_file": "label_val.json"
         },
         "mydataset_test": {
-			"ann_file": "/data/fenli/training/fashion/label_test.json"
+            "data_dir": "/home/fenli/my_data/training/fashion_catgory_attr_prediction",
+            "ann_file": "label_test.json"
         }
     }
 
@@ -140,13 +143,15 @@ class DatasetCatalog(object):
                 args=args,
             )
         elif "mydataset" in name:
-        	args = dict(
-        		ann_file=os.path.join(data_dir, attrs["ann_file"]),
-        	)
-        	return dict(
-        		factory="MyDataset",
-        		args=args,
-        	)
+            attrs = DatasetCatalog.DATASETS[name]
+            args = dict(
+                data_dir=attrs["data_dir"],
+                ann_file=attrs["ann_file"],
+            )
+            return dict(
+                factory="MyDataset",
+                args=args,
+            )
 
         raise RuntimeError("Dataset not available: {}".format(name))
 
