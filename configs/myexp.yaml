@@ -22,12 +22,14 @@ MODEL:
     PREDICTOR: "FPNPredictor"
 DATASETS:
   TRAIN: ("mydataset_train", "mydataset_val")
-  TEST: ("mydataset_test",)
+  #TEST: ("mydataset_test",)
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 SOLVER:
-  BASE_LR: 0.01
+  BASE_LR: 0.005
   WEIGHT_DECAY: 0.0001
-  STEPS: (120000, 160000)
-  MAX_ITER: 10000
-  IMS_PER_BATCH: 2
+  STEPS: (40000, 60000)
+  MAX_ITER: 80000
+  IMS_PER_BATCH: 4
+TEST:
+  IMS_PER_BATCH: 8
