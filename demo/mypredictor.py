@@ -76,6 +76,7 @@ class MyDemo(object):
     ):
         self.cfg = cfg.clone()
         self.model = build_detection_model(cfg)
+        print(self.model)
         self.model.eval()
         self.device = torch.device(cfg.MODEL.DEVICE)
         self.model.to(self.device)
@@ -98,6 +99,15 @@ class MyDemo(object):
         self.show_mask_heatmaps = show_mask_heatmaps
         self.masks_per_dim = masks_per_dim
 
+    def get_model(self):
+        return self.model
+    
+    def set_model(self, model):
+        self.model = model
+        self.model.eval()
+        self.device = torch.device(self.cfg.MODEL.DEVICE)
+        self.model.to(self.device)
+        
     def build_transform(self):
         """
         Creates a basic transformation that was used to train the models
@@ -206,10 +216,10 @@ class MyDemo(object):
         """
         threshold = self.confidence_threshold
         if confThreshold is not None:
-            conf = confThreshold
+            threshold = confThreshold
         
         scores = predictions.get_field("scores")
-        keep = torch.nonzero(scores > conf).squeeze(1)
+        keep = torch.nonzero(scores > threshold).squeeze(1)
         predictions = predictions[keep]
         scores = predictions.get_field("scores")
         _, idx = scores.sort(0, descending=True)

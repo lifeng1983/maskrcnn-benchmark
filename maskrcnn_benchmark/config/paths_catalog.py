@@ -114,6 +114,10 @@ class DatasetCatalog(object):
         },
         "mydataset_test": {
             "data_dir": "/home/fenli/my_data/training/fashion_catgory_attr_prediction",
+            "ann_file": "label_test_full.json"
+        },
+        "mydataset_minitest": {
+            "data_dir": "/home/fenli/my_data/training/fashion_catgory_attr_prediction",
             "ann_file": "label_test.json"
         }
     }

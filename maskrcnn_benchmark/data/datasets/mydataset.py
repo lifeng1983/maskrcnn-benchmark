@@ -40,3 +40,75 @@ class MyDataset(torch.utils.data.Dataset):
         rec = self.image_records[idx]
         return { "height": rec["height"],
                  "width" : rec["width"] }
+    
+    def get_groundtruth(self, idx):
+        rec = self.image_records[idx]
+        
+        boxes = [ [ rec["x1"],
+                    rec["y1"],
+                    rec["x2"],
+                    rec["y2"]  ] ]
+    
+        target = BoxList(boxes, (rec["width"], rec["height"]), mode="xyxy")
+        target.add_field("labels", torch.tensor([ rec["label"] ]))
+        target.add_field("difficult", torch.tensor([ False ]))
+
+        return target
+    
+    def map_class_id_to_class_name(self, class_id):
+        return MyDataset.CLASSES[class_id]
+    
+    
+    CLASSES = [
+        "__background",
+        "Anorak",
+        "Blazer",
+        "Blouse",
+        "Bomber",
+        "Button-Down",
+        "Cardigan",
+        "Flannel",
+        "Halter",
+        "Henley",
+        "Hoodie",
+        "Jacket",
+        "Jersey",
+        "Parka",
+        "Peacoat",
+        "Poncho",
+        "Sweater",
+        "Tank",
+        "Tee",
+        "Top",
+        "Turtleneck",
+        "Capris",
+        "Chinos",
+        "Culottes",
+        "Cutoffs",
+        "Gauchos",
+        "Jeans",
+        "Jeggings",
+        "Jodhpurs",
+        "Joggers",
+        "Leggings",
+        "Sarong",
+        "Shorts",
+        "Skirt",
+        "Sweatpants",
+        "Sweatshorts",
+        "Trunks",
+        "Caftan",
+        "Cape",
+        "Coat",
+        "Coverup",
+        "Dress",
+        "Jumpsuit",
+        "Kaftan",
+        "Kimono",
+        "Nightdress",
+        "Onesie",
+        "Robe",
+        "Romper",
+        "Shirtdress",
+        "Sundress"
+    ]
